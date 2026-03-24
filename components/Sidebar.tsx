@@ -3,96 +3,97 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, GraduationCap, FileLock, Users, ScrollText, BookXIcon, UserXIcon, SettingsIcon } from 'lucide-react';
+import { 
+  LayoutDashboard, GraduationCap, Users, ScrollText, 
+  BookXIcon, FileLock, UserXIcon, SettingsIcon 
+} from 'lucide-react';
+
+// Pemetaan icon berdasarkan string iconName
 const IconMap: { [key: string]: React.ElementType } = {
   dashboard: LayoutDashboard,
   siswa: GraduationCap,
   guru: Users,
-  jadwal: ScrollText
+  jadwal: ScrollText,
+  late: BookXIcon,
+  permission: FileLock,
+  violation: UserXIcon,
+  settings: SettingsIcon,
 };
 
-// Definisikan tipe untuk item menu
 interface MenuItem {
   title: string;
-  path: string;
-  iconName: string; // Tipe data string
+  path: string; // Wajib ada path
+  iconName: string;
+}
+
+interface MenuSection {
+  label?: string; // Label pembatas (opsional)
+  items: MenuItem[];
 }
 
 interface SidebarProps {
-  menuItems: MenuItem[];
+  sections: MenuSection[];
 }
 
-export default function Sidebar({ menuItems }: SidebarProps) {
+export default function Sidebar({ sections }: SidebarProps) {
   const pathname = usePathname();
 
   const getLinkClass = (path: string) => {
+    // Mengecek apakah link sedang aktif berdasarkan URL browser
     const isActive = pathname === path;
-    return `flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
+    return `flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${
       isActive 
-        ? 'bg-electric/10 text-electric shadow-[0_0_15px_rgba(59,130,246,0.1)]' 
+        ? 'bg-blue-600/10 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.1)]' 
         : 'hover:bg-slate-800 text-slate-400'
     }`;
   };
 
   return (
-    <aside className="w-64 bg-navy-card border-r border-slate-800 flex flex-col h-screen sticky top-0">
+    <aside className="w-64 bg-[#0f172a] border-r border-slate-800 flex flex-col h-screen sticky top-0 overflow-y-auto">
+      {/* Brand Logo */}
       <div className="p-6 flex items-center gap-3 border-b border-slate-800">
-        <svg viewBox="0 0 24 24" className="w-8 h-8 text-electric fill-current">
-          <path d="M12 2L1 7l11 5 11-5-11-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-        <span className="text-xl font-bold tracking-tight">
-          Edu<span className="text-electric">Core</span>
+        <div className="p-2 bg-blue-600/10 rounded-lg">
+          <LayoutDashboard className="w-6 h-6 text-blue-500" />
+        </div>
+        <span className="text-xl font-bold tracking-tight text-white">
+          Edu<span className="text-blue-500">Core</span>
         </span>
       </div>
       
-      <nav className="flex-1 p-4 space-y-2 mt-4">
-        {/* LOOPING MENU DINAMIS DISINI */}
-        {menuItems.map((item, index) => {
-          // Ambil icon berdasarkan string iconName
-          const IconComponent = IconMap[item.iconName] || LayoutDashboard;
-          
-          return (
-            <Link key={index} href={item.path} className={getLinkClass(item.path)}>
-              <IconComponent className="w-5 h-5" />
-              {item.title}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 p-4 space-y-6 mt-4">
+        {sections.map((section, sIndex) => (
+          <div key={sIndex} className="space-y-1">
+            {/* Render Header Section jika ada label */}
+            {section.label && (
+              <div className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 mt-4">
+                {section.label}
+              </div>
+            )}
 
-        <div className="pt-4 pb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest">
-          Piket
-        </div>
-
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-electric/20 hover:text-electric transition-all text-slate-400 cursor-pointer">
-          <BookXIcon className="w-5 h-5" />
-          Siswa Terlambah
-        </button>
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-electric/20 hover:text-electric transition-all text-slate-400 cursor-pointer">
-          <FileLock className="w-5 h-5" />
-          Izin Masuk / Keluar
-        </button>
-
-        <div className="pt-4 pb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest">
-          Kesiswaan
-        </div>
-
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-electric/20 hover:text-electric transition-all text-slate-400 cursor-pointer">
-          <UserXIcon className="w-5 h-5" />
-          Pelanggaran
-        </button>
-
-        <div className="pt-4 pb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-widest">
-          Setting
-        </div>
-
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-electric/20 hover:text-electric transition-all text-slate-400 cursor-pointer">
-          <SettingsIcon className="w-5 h-5" />
-          Users
-        </button>
+            {/* Looping semua item menu sebagai Link */}
+            {section.items.map((item, iIndex) => {
+              const IconComponent = IconMap[item.iconName] || LayoutDashboard;
+              
+              return (
+                <Link 
+                  key={iIndex} 
+                  href={item.path} 
+                  className={getLinkClass(item.path)}
+                >
+                  <IconComponent className="w-5 h-5" />
+                  <span className="truncate">{item.title}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
       
+      {/* Footer info versi aplikasi */}
       <div className="p-4 border-t border-slate-800 text-center">
-        <p className="text-[10px] text-slate-600 font-mono">v1.0.2-stable</p>
+        <p className="text-[10px] text-slate-700 font-mono font-bold uppercase tracking-widest">
+          v1.0.2-stable
+        </p>
       </div>
     </aside>
   );

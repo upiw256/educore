@@ -4,7 +4,7 @@ export async function GET() {
   try {
     const BARRIER = process.env.DAPODIK_BARRIER || "margaasih";
 
-    const response = await fetch('http://app.sman1margaasih.sch.id:30000/api', {
+    const response = await fetch(`${process.env.DAPODIK_API_URL}`, {
       method: 'GET',
       headers: {
         "X-Barrier": BARRIER, // INI YANG BIKIN 401 KALAU HILANG

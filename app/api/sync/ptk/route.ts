@@ -8,7 +8,7 @@ export async function POST() {
     const BARRIER = process.env.DAPODIK_BARRIER || "margaasih";
 
     // Ambil data dari API Guru
-    const response = await fetch(`http://app.sman1margaasih.sch.id:30000/api/guru`, {
+    const response = await fetch(`${process.env.DAPODIK_API_URL}/guru`, {
       headers: { "X-Barrier": BARRIER },
       cache: 'no-store'
     });

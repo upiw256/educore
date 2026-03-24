@@ -9,33 +9,40 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   // SETTING MENU DISINI
-  const adminMenus = [
+  const menuData = [
     {
-      title: 'Dashboard',
-      path: '/admin/dashboard',
-      iconName: 'dashboard', // Gunakan string saja
+      items: [
+        { title: "Dashboard", path: "/admin/dashboard", iconName: "dashboard" },
+        { title: "Data Siswa", path: "/admin/siswa", iconName: "siswa" },
+        { title: "Data Guru", path: "/admin/guru", iconName: "guru" },
+        { title: "Jadwal", path: "/admin/jadwal", iconName: "jadwal" },
+      ]
     },
     {
-      title: 'Data Siswa',
-      path: '/admin/siswa',
-      iconName: 'siswa', // Gunakan string saja
+      label: "Piket",
+      items: [
+        { title: "Siswa Terlambat", path: "/admin/piket/terlambat", iconName: "late" },
+        { title: "Izin Masuk / Keluar", path: "/admin/piket/izin", iconName: "permission" },
+      ]
     },
     {
-      title: 'Data Guru',
-      path: '/admin/guru',
-      iconName: 'guru', // Jangan lupa tambahkan 'guru: Users' di IconMap Sidebar.tsx
+      label: "Kesiswaan",
+      items: [
+        { title: "Pelanggaran", path: "/admin/kesiswaan/pelanggaran", iconName: "violation" },
+      ]
     },
     {
-      title: 'Jadwal',
-      path: '/admin/jadwal',
-      iconName: 'jadwal', // Jangan lupa tambahkan 'guru: Users' di IconMap Sidebar.tsx
-    },
+      label: "Sistem",
+      items: [
+        { title: "Manajemen User", path: "/admin/settings/users", iconName: "settings" },
+      ]
+    }
   ];
 
   return (
     <div className="flex min-h-screen bg-navy-dark text-slate-200">
       {/* Kirim adminMenus ke Sidebar */}
-      <Sidebar menuItems={adminMenus} />
+      <Sidebar sections={menuData} />
 
       <main className="flex-1 flex flex-col">
         {/* Navbar tetap sama */}
