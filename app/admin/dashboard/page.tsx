@@ -1,15 +1,22 @@
+
 import React from 'react';
 import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 import Teacher from '@/models/Teacher';
+import IzinSiswa from '@/models/IzinSiswa';
+import LateRecord from '@/models/LateRecord';
+import Pelanggaran from '@/models/Pelanggaran';
 import SyncButton from "@/components/SyncButton";
 import SyncPTKButton from '@/components/SyncPTKButton';
 
 export default async function DashboardPage() {
+
   // 1. Ambil data asli dari MongoDB
   await dbConnect();
   const totalSiswa = await Student.countDocuments();
   const totalGuru = await Teacher.countDocuments();
+  const totalIzinPending = await LateRecord.countDocuments({createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
+  const totalPelanggaran = await Pelanggaran.countDocuments({ date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
 
   // 2. Masukkan ke dalam array stats (UI tetap sama)
   const stats = [
@@ -27,8 +34,8 @@ export default async function DashboardPage() {
       color: 'text-white', 
       bg: 'bg-slate-800' 
     },
-    { label: 'Siswa Izin (App)', value: '18', desc: 'Perlu Approval', color: 'text-warning', bg: 'bg-warning/10' },
-    { label: 'Pelanggaran Hari Ini', value: '5', desc: 'Poin Masuk', color: 'text-danger', bg: 'bg-danger/10' },
+    { label: 'Siswa Terlambat Minggu ini', value: totalIzinPending.toLocaleString(), desc: 'Siswa', color: 'text-warning', bg: 'bg-warning/10' },
+    { label: 'Pelanggaran Minggu ini', value: totalPelanggaran.toLocaleString(), desc: 'Siswa', color: 'text-danger', bg: 'bg-danger/10' },
   ];
 
   const recentActivity = [
