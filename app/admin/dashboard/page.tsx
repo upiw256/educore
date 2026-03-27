@@ -3,20 +3,22 @@ import React from 'react';
 import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 import Teacher from '@/models/Teacher';
-import IzinSiswa from '@/models/IzinSiswa';
 import LateRecord from '@/models/LateRecord';
 import Pelanggaran from '@/models/Pelanggaran';
 import SyncButton from "@/components/SyncButton";
 import SyncPTKButton from '@/components/SyncPTKButton';
+import SyncSekolahButton from '@/components/SyncSekolahButton';
+import SchoolProfileCard from '@/components/SchoolProfileCard';
 
 export default async function DashboardPage() {
 
   // 1. Ambil data asli dari MongoDB
   await dbConnect();
   const totalSiswa = await Student.countDocuments();
-  const totalGuru = await Teacher.countDocuments();
+  const totalGuru = await Teacher.countDocuments({ jenis_ptk_id_str: /Guru/i }); // Hanya hitung yang jenis PTK-nya mengandung "Guru"
   const totalIzinPending = await LateRecord.countDocuments({createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
   const totalPelanggaran = await Pelanggaran.countDocuments({ date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } });
+
 
   // 2. Masukkan ke dalam array stats (UI tetap sama)
   const stats = [
@@ -68,46 +70,7 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Recent Activity Table */}
-      <div className="glass-card rounded-2xl overflow-hidden border-slate-800/50">
-        <div className="p-6 border-b border-slate-800/50 flex justify-between items-center bg-white/[0.02]">
-          <h3 className="font-semibold text-lg text-white">Recent Activity (Mobile App)</h3>
-          <button className="text-sm text-electric hover:underline cursor-pointer font-medium">View All</button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="text-slate-500 text-xs uppercase tracking-wider bg-slate-900/50">
-                <th className="px-6 py-4 font-semibold">Student Name</th>
-                <th className="px-6 py-4 font-semibold">Class</th>
-                <th className="px-6 py-4 font-semibold">Activity</th>
-                <th className="px-6 py-4 font-semibold">Time</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/50 text-sm">
-              {recentActivity.map((row, i) => (
-                <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                  <td className="px-6 py-4 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
-                      <img src={`https://ui-avatars.com/api/?name=${row.name}&background=random`} alt="avatar" />
-                    </div>
-                    <span className="font-medium text-slate-200">{row.name}</span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-400">{row.class}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-md text-[11px] font-medium ${
-                      row.status === 'success' ? 'bg-success/10 text-success' : 'bg-electric/10 text-electric'
-                    }`}>
-                      {row.activity}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-500 font-mono text-xs">{row.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <SchoolProfileCard />
 
       {/* Shortcut Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,6 +91,11 @@ export default async function DashboardPage() {
                 <p className="text-sm text-slate-400 mb-4">Update data Guru dan Tenaga Kependidikan SMAN 1 Margaasih.</p>
                 <SyncPTKButton />
             </div>
+            </div>
+            <div className="mt-2 p-6 rounded-2xl bg-slate-800/40 border border-slate-700">
+                <h4 className="font-bold text-white mb-2">Sync Data Sekolah</h4>
+                <p className="text-sm text-slate-400 mb-4">Update data sekolah SMAN 1 Margaasih.</p>
+                <SyncSekolahButton />
             </div>
         </div>
         <div className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700">
