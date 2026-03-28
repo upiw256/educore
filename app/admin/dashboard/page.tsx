@@ -74,12 +74,12 @@ export default async function DashboardPage() {
 
       {/* Shortcut Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-electric/20 to-transparent border border-electric/30">
+        <div className="p-6 rounded-2xl bg-linear-to-br from-electric/20 to-transparent border border-electric/30">
           <h4 className="font-bold text-white mb-2">Sync Dapodik Terjadwal</h4>
           <p className="text-sm text-slate-400 mb-4">Pastikan data siswa dan PTK selalu sinkron dengan server pusat setiap hari.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Box Kiri: Sync Siswa */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-electric/20 to-transparent border border-electric/30">
+            <div className="p-6 rounded-2xl bg-linear-to-br from-electric/20 to-transparent border border-electric/30">
                 <h4 className="font-bold text-white mb-2">Sync Siswa</h4>
                 <p className="text-sm text-slate-400 mb-4">Update data peserta didik langsung dari server pusat.</p>
                 <SyncButton /> 
