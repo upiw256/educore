@@ -38,6 +38,7 @@ export const menuData: MenuSection[] = [
     label: "Sistem",
     items: [
       { title: "Manajemen User", path: "/admin/settings/users", iconName: "settings", roles: ["admin"] },
+      { title: "Profile", path: "/admin/settings/profile", iconName: "logout" }
     ]
   }
 ];

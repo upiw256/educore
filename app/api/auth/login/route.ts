@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     // 3. Buat JWT Token yang kompatibel dengan Edge Runtime/Proxy
     const token = await new SignJWT({ 
-      id: user._id, 
+      id: user._id.toString(), 
       role: user.role,
       username: user.username 
     })

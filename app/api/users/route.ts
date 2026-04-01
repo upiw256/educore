@@ -73,3 +73,36 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Gagal mencabut akses" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  await dbConnect();
+  try {
+    const { userId, newPassword } = await req.json();
+
+    if (!userId || !newPassword) {
+      return NextResponse.json({ error: "Data tidak lengkap" }, { status: 400 });
+    }
+
+    // Hash password baru dengan salt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update hanya password-nya saja
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return NextResponse.json({ error: "User tidak ditemukan" }, { status: 404 });
+    }
+
+    return NextResponse.json({ 
+      message: "Password berhasil diperbarui secara permanen" 
+    }, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal memperbarui password" }, { status: 500 });
+  }
+}
