@@ -8,12 +8,12 @@ export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
 
-  if (!token) return NextResponse.json({ role: 'guest' }, { status: 401 });
+  if (!token) return NextResponse.json({ role: 'guest', name:'-' }, { status: 401 });
 
   try {
     const { payload } = await jwtVerify(token, SECRET_KEY);
-    return NextResponse.json({ role: payload.role });
+    return NextResponse.json({ role: payload.role, name: payload.username }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ role: 'guest' }, { status: 401 });
+    return NextResponse.json({ role: 'guest', name:'-' }, { status: 401 });
   }
 }

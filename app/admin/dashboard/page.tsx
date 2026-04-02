@@ -1,17 +1,50 @@
 
 import React from 'react';
 import dbConnect from '@/lib/mongodb';
+import { cookies } from 'next/headers'; //
+import { jwtVerify } from 'jose';
 import Student from '@/models/Student';
 import Teacher from '@/models/Teacher';
 import LateRecord from '@/models/LateRecord';
 import Pelanggaran from '@/models/Pelanggaran';
+import User from '@/models/User';
 import SyncButton from "@/components/SyncButton";
 import SyncPTKButton from '@/components/SyncPTKButton';
 import SyncSekolahButton from '@/components/SyncSekolahButton';
 import SchoolProfileCard from '@/components/SchoolProfileCard';
 
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || 'secret123');
+
 export default async function DashboardPage() {
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  let namaUser = "Pengguna";
+  if (token) {
+    try {
+      const { payload } = await jwtVerify(token, SECRET_KEY);
+      const userId = payload.id as string;
+
+      // 2. Cari User dan Populate data Teacher untuk ambil Nama Asli
+      const userData = await User.findById(userId)
+        .populate({
+          path: 'teacherId',
+          model: Teacher,
+          select: 'nama' // Hanya ambil field nama saja agar ringan
+        })
+        .lean();
+
+      if (userData && userData.teacherId) {
+        // @ts-ignore
+        namaUser = userData.teacherId.nama;
+      } else {
+        // Fallback jika data teacher tidak ditemukan, pakai username (NIP)
+        namaUser = payload.username as string;
+      }
+    } catch (error) {
+      console.error("Gagal verifikasi profil di dashboard" + error);
+    }
+  }
   // 1. Ambil data asli dari MongoDB
   await dbConnect();
   const totalSiswa = await Student.countDocuments();
@@ -51,7 +84,7 @@ export default async function DashboardPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Welcome Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">Welcome back, Reza! 👋</h1>
+        <h1 className="text-3xl font-bold text-white">Welcome back, {namaUser} 👋</h1>
         <p className="text-slate-400 mt-1">Berikut adalah ringkasan aktivitas sekolah hari ini.</p>
       </div>
 

@@ -12,15 +12,20 @@ export default function AdminLayout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userRole, setUserRole] = useState('guest'); // Default role
+  const [teacherName, setTeacherName] = useState('User'); // Default name
+  
 
   // Ambil data role saat mounting
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch('/api/auth/me'); // Buat endpoint ini untuk cek session
+        const teacherRes = await fetch('/api/users/profile'); // Endpoint untuk ambil nama guru
         if (res.ok) {
           const data = await res.json();
+          const teacherData = await teacherRes.json();
           setUserRole(data.role);
+          setTeacherName(teacherData.nama || 'User');
         }
       } catch (err) {
         console.error("Gagal memuat profil");
@@ -28,9 +33,11 @@ export default function AdminLayout({
     };
     fetchUser();
   }, []);
+  
 
   return (
     <div className="flex h-screen w-full bg-[#0b1120] text-slate-200 overflow-hidden">
+      
       {/* Overlay untuk mobile */}
       {isSidebarOpen && (
         <div 
@@ -64,12 +71,12 @@ export default function AdminLayout({
           <div className="flex items-center gap-4">
              <div className="text-right hidden sm:block">
                 <p className="text-sm font-black text-white italic uppercase tracking-tighter">
-                  {userRole === 'admin' ? 'Master Administrator' : userRole.toUpperCase()}
+                  {teacherName === 'admin' ? 'Master Administrator' : teacherName.toUpperCase()}
                 </p>
                 <p className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">EduCore System</p>
              </div>
              <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
-                <img src={`https://ui-avatars.com/api/?name=${userRole}&background=0B1120&color=3B82F6`} alt="avatar" />
+                <img src={`https://ui-avatars.com/api/?name=${teacherName}&background=0B1120&color=3B82F6`} alt="avatar" />
              </div>
           </div>
         </header>

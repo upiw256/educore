@@ -26,7 +26,7 @@ export async function proxy(request: NextRequest) {
     // 4. PROTEKSI URL MANUAL (Role-Based Access Control)
     
     // Hanya Admin yang boleh masuk ke settings atau manajemen user
-    if (pathname.startsWith('/admin/settings') && userRole !== 'admin') {
+    if (pathname.startsWith('/admin/settings/users') && userRole !== 'admin') {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     }
 

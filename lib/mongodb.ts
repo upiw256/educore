@@ -9,7 +9,7 @@ if (!MONGODB_URI) {
 }
 
 /** * Global digunakan untuk menjaga koneksi tetap aktif selama hot reloading 
- * di lingkungan development.
+ * di lingkungan development agar tidak memicu memory threshold.
  */
 let cached = (global as any).mongoose;
 
@@ -19,14 +19,18 @@ if (!cached) {
 
 async function dbConnect() {
   if (cached.conn) {
+    // console.log("=> Menggunakan koneksi MongoDB yang sudah ada (Cached)");
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      // Opsi tambahan untuk performa di Next.js
+      maxPoolSize: 10,
     };
 
+    console.log("=> Membuat koneksi MongoDB baru...");
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;
     });
