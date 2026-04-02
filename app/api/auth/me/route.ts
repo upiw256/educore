@@ -1,19 +1,21 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { extractTokenFromServerContext, verifyToken } from '@/lib/auth';
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || 'secret123');
+export async function GET(request: Request) {
+  // Cek token dari Bearer header (Android) ATAU cookie (Web)
+  const token = await extractTokenFromServerContext(request);
 
-export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
-
-  if (!token) return NextResponse.json({ role: 'guest', name:'-' }, { status: 401 });
+  if (!token) {
+    return NextResponse.json({ role: 'guest', name: '-' }, { status: 401 });
+  }
 
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY);
-    return NextResponse.json({ role: payload.role, name: payload.username }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ role: 'guest', name:'-' }, { status: 401 });
+    const payload = await verifyToken(token);
+    return NextResponse.json(
+      { role: payload.role, name: payload.username },
+      { status: 200 }
+    );
+  } catch {
+    return NextResponse.json({ role: 'guest', name: '-' }, { status: 401 });
   }
 }

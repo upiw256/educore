@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
-import { SignJWT } from 'jose';
+import { createToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
-
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || 'secret123');
 
 export async function POST(request: Request) {
   try {
@@ -24,29 +22,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Password salah' }, { status: 401 });
     }
 
-    // 3. Buat JWT Token yang kompatibel dengan Edge Runtime/Proxy
-    const token = await new SignJWT({ 
-      id: user._id.toString(), 
+    // 3. Buat JWT Token (menggunakan helper lib/auth.ts)
+    const token = await createToken({
+      id: user._id.toString(),
       role: user.role,
-      username: user.username 
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('1d')
-      .sign(SECRET_KEY);
+      username: user.username,
+    });
 
-    // 4. Simpan ke Cookie agar bisa dibaca oleh proxy.ts
+    // 4. Simpan ke Cookie agar bisa dibaca oleh proxy.ts (untuk Web / Browser)
     const cookieStore = await cookies();
     cookieStore.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 // 1 hari
+      maxAge: 60 * 60 * 24, // 1 hari
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      role: user.role // Dikirim balik untuk kebutuhan redirect di Proxy
+    // 5. Kembalikan token di JSON body JUGA (untuk Android / mobile client)
+    //    Android menyimpan token ini di SharedPreferences dan mengirimnya via
+    //    header: Authorization: Bearer <token>
+    return NextResponse.json({
+      success: true,
+      role: user.role,
+      token,                  // ← BARU: untuk Android
+      username: user.username, // ← BARU: info tambahan untuk Android
     });
 
   } catch (error) {
