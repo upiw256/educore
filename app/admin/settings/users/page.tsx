@@ -3,8 +3,8 @@ import dbConnect from '@/lib/mongodb';
 import Teacher from '@/models/Teacher';
 import User from '@/models/User';
 import { ShieldAlert, Key, Fingerprint, Users } from 'lucide-react';
-import UserTableControls from '@/components/UserTableControls';
-import UserRoleActions from '@/components/UserRoleActions';
+import UserTableControls from '@/components/admin/UserTableControls';
+import UserRoleActions from '@/components/admin/UserRoleActions';
 
 export default async function UserSettingsPage({
   searchParams,

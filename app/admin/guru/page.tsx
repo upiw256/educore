@@ -2,7 +2,7 @@ import React from 'react';
 import dbConnect from '@/lib/mongodb';
 import Teacher from '@/models/Teacher';
 import { Users, Briefcase, Calendar, Fingerprint } from 'lucide-react';
-import GuruTableControls from '@/components/GuruTableControls';
+import GuruTableControls from '@/components/admin/GuruTableControls';
 
 export default async function TeacherListPage({
   searchParams,

@@ -1,6 +1,6 @@
 // app/admin/jadwal/page.tsx
 import { getDaftarKelas } from '@/lib/db/getClasses';
-import AdminJadwalClient from '@/components/AdminJadwalClient';
+import AdminJadwalClient from '@/components/admin/AdminJadwalClient';
 
 export default async function AdminJadwalPage() {
   const daftarKelas = await getDaftarKelas();

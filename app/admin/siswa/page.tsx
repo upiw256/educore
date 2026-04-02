@@ -2,7 +2,7 @@ import React from 'react';
 import dbConnect from '@/lib/mongodb';
 import Student from '@/models/Student';
 import { GraduationCap } from 'lucide-react';
-import SiswaTableControls from '@/components/SiswaTableControls';
+import SiswaTableControls from '@/components/admin/SiswaTableControls';
 
 export default async function StudentListPage({
   searchParams,

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/ui/Sidebar';
 import { Menu, X } from 'lucide-react'; 
-import DapodikStatus from '@/components/DapodikStatus';
+import DapodikStatus from '@/components/ui/DapodikStatus';
 import Image from 'next/image';
 import { menuData } from '@/lib/menu'; 
 export default function AdminLayout({

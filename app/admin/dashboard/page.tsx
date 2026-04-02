@@ -8,10 +8,10 @@ import Teacher from '@/models/Teacher';
 import LateRecord from '@/models/LateRecord';
 import Pelanggaran from '@/models/Pelanggaran';
 import User from '@/models/User';
-import SyncButton from "@/components/SyncButton";
-import SyncPTKButton from '@/components/SyncPTKButton';
-import SyncSekolahButton from '@/components/SyncSekolahButton';
-import SchoolProfileCard from '@/components/SchoolProfileCard';
+import SyncButton from "@/components/sync/SyncButton";
+import SyncPTKButton from '@/components/sync/SyncPTKButton';
+import SyncSekolahButton from '@/components/sync/SyncSekolahButton';
+import SchoolProfileCard from '@/components/admin/SchoolProfileCard';
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || 'secret123');
 
