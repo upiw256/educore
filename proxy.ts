@@ -17,7 +17,7 @@ function getToken(request: NextRequest): string | null {
   return request.cookies.get('token')?.value ?? null;
 }
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Rute publik: login page, auth API, dan aset statis
