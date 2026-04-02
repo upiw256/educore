@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { Menu, X } from 'lucide-react'; 
 import DapodikStatus from '@/components/DapodikStatus';
+import Image from 'next/image';
 import { menuData } from '@/lib/menu'; 
 export default function AdminLayout({
   children,
@@ -76,7 +77,12 @@ export default function AdminLayout({
                 <p className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">EduCore System</p>
              </div>
              <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
-                <img src={`https://ui-avatars.com/api/?name=${teacherName}&background=0B1120&color=3B82F6`} alt="avatar" />
+                <Image 
+                  src={`https://ui-avatars.com/api/?name=${teacherName}&background=0B1120&color=3B82F6`} 
+                  alt="avatar" 
+                  width={40} 
+                  height={40} 
+                />
              </div>
           </div>
         </header>
