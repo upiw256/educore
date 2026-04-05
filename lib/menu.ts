@@ -19,6 +19,7 @@ export const menuData: MenuSection[] = [
       { title: "Data Siswa", path: "/admin/siswa", iconName: "siswa", roles: ["admin"] },
       { title: "Data Guru", path: "/admin/guru", iconName: "guru", roles: ["admin"] },
       { title: "Jadwal", path: "/admin/jadwal", iconName: "jadwal", roles: ["admin"] },
+      { title: "Pengumuman", path: "/admin/pengumuman", iconName: "megaphone", roles: ["admin"] },
     ]
   },
   {

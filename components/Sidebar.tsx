@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   LayoutDashboard, GraduationCap, Users, ScrollText, 
-  BookXIcon, FileLock, UserXIcon, SettingsIcon, LogOut, Loader2 
+  BookXIcon, FileLock, UserXIcon, SettingsIcon, LogOut, Loader2, Megaphone 
 } from 'lucide-react';
 
 const IconMap: { [key: string]: React.ElementType } = {
@@ -17,6 +17,7 @@ const IconMap: { [key: string]: React.ElementType } = {
   permission: FileLock,
   violation: UserXIcon,
   settings: SettingsIcon,
+  megaphone: Megaphone,
 };
 
 interface MenuItem {
