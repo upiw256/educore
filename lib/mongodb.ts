@@ -38,6 +38,40 @@ async function dbConnect() {
 
   try {
     cached.conn = await cached.promise;
+    
+    // Seed default user if no users exist
+    try {
+      const User = mongoose.models.User || (await import('../models/User')).default;
+      const userCount = await User.countDocuments();
+      if (userCount === 0) {
+        console.log("Tidak ada user ditemukan. Membuat user default (suadmin)...");
+        
+        const Teacher = mongoose.models.Teacher || (await import('../models/Teacher')).default;
+        let dummyTeacher = await Teacher.findOne({ ptk_id: 'default-admin-ptk' });
+        
+        if (!dummyTeacher) {
+          dummyTeacher = await Teacher.create({
+            ptk_id: 'default-admin-ptk',
+            nama: 'Super Admin',
+          });
+        }
+
+        const bcrypt = require('bcryptjs');
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('5414450', salt);
+        
+        await User.create({
+          username: 'suadmin',
+          password: hashedPassword,
+          role: 'admin',
+          teacherId: dummyTeacher._id,
+        });
+        console.log("User default (suadmin) berhasil dibuat.");
+      }
+    } catch (seedErr) {
+      console.error("Gagal melakukan seed default user:", seedErr);
+    }
+
   } catch (e) {
     cached.promise = null;
     throw e;

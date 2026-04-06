@@ -6,13 +6,13 @@ import Teacher from '@/models/Teacher';
 export async function GET(request: Request) {
   try {
     await dbConnect();
-    
+
     const { searchParams } = new URL(request.url);
     const jabatan = searchParams.get('jabatan');
 
     // Jika jabatan kosong, ambil semua guru agar tidak 404
-    const query = jabatan 
-      ? { jenis_ptk_id_str: { $regex: new RegExp(jabatan, "i") } } 
+    const query = jabatan
+      ? { jenis_ptk_id_str: { $regex: new RegExp(jabatan, "i") } }
       : {};
 
     const teachers = await Teacher.find(query).limit(10);
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     // KEMBALIKAN ARRAY KOSONG [] JIKA DATA TIDAK ADA (STATUS 200)
     // Ini supaya frontend tidak menganggapnya error 404
     return NextResponse.json(teachers || [], { status: 200 });
-    
+
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -32,7 +32,7 @@ export async function POST() {
     await dbConnect();
     const BARRIER = process.env.DAPODIK_BARRIER || "margaasih";
 
-    const response = await fetch(`${process.env.DAPODIK_API_URL}/guru`, {
+    const response = await fetch(`${process.env.DAPODIK_API_URL}/api/guru`, {
       headers: { "X-Barrier": BARRIER },
       cache: 'no-store'
     });
@@ -45,15 +45,15 @@ export async function POST() {
     const ops = rows.map((ptk: any) => ({
       updateOne: {
         filter: { ptk_id: ptk.ptk_id },
-        update: { 
-          $set: { 
+        update: {
+          $set: {
             nama: ptk.nama,
             nuptk: ptk.nuptk,
             nip: ptk.nip,
             jenis_ptk_id_str: ptk.jenis_ptk_id_str,
             jabatan_ptk_id_str: ptk.jabatan_ptk_id_str,
-            status_kepegawaian_id_str: ptk.status_kepegawaian_id_str 
-          } 
+            status_kepegawaian_id_str: ptk.status_kepegawaian_id_str
+          }
         },
         upsert: true
       }

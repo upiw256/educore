@@ -4,7 +4,7 @@ export async function GET() {
   try {
     const BARRIER = process.env.DAPODIK_BARRIER || "margaasih";
 
-    const response = await fetch(`${process.env.DAPODIK_API_URL}`, {
+    const response = await fetch(`${process.env.DAPODIK_API_URL}/api`, {
       method: 'GET',
       headers: {
         "X-Barrier": BARRIER, // INI YANG BIKIN 401 KALAU HILANG
@@ -18,8 +18,8 @@ export async function GET() {
     }
 
     const data = await response.json();
-    return NextResponse.json({ 
-      connected: data.status === 'connected' 
+    return NextResponse.json({
+      connected: data.status === 'connected'
     });
 
   } catch (error) {
