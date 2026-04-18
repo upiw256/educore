@@ -7,7 +7,7 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
 ENV UV_USE_IO_URING=0
-RUN npm install --legacy-peer-deps
+# RUN npm install --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM base AS builder
