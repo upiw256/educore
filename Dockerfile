@@ -18,6 +18,13 @@ COPY . .
 # Next.js collects completely anonymous telemetry data about general usage.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
+ENV SKIP_PREFLIGHT_CHECK=true
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+# Bypassing DB during build
+ENV NEXT_PUBLIC_SKIP_DB=true
+
 RUN npm run build
 
 # Production image, copy all the files and run next
