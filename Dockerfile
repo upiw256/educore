@@ -12,7 +12,7 @@ ENV UV_USE_IO_URING=0
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm --verbose install
 RUN npm run build
